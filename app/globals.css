@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-lexend: 'Lexend', system-ui, sans-serif;
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --header-h: 64px;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #F7F5F2;
+  color: #173340;
+  font-family: var(--font-lexend);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Screen transitions */
+.screen-enter {
+  animation: fadeSlideIn 0.4s ease forwards;
+}
+
+/* Pulse dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Thank-you circle */
+.circle-scale {
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
+  opacity: 0;
+}
+
+/* Check path animation */
+.check-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCheck 0.6s ease 0.4s forwards;
+}
+
+/* Scale selected state */
+.scale-item-selected {
+  background-color: #173340;
+  color: #fff;
+  border-color: #173340;
+}
+
+/* Progress bar fill */
+.progress-fill {
+  transition: width 0.4s ease;
+}
+
+/* Traffic light colours */
+.tl-strong-positive { color: #1a7a40; }
+.tl-positive        { color: #27ae60; }
+.tl-neutral         { color: #5a3e00; }
+.tl-concern         { color: #e67e22; }
+.tl-poor            { color: #c0392b; }
+
+.tl-bg-strong-positive { background-color: #1a7a40; }
+.tl-bg-positive        { background-color: #27ae60; }
+.tl-bg-neutral         { background-color: #f0c040; }
+.tl-bg-concern         { background-color: #e67e22; }
+.tl-bg-poor            { background-color: #c0392b; }
