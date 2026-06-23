@@ -2,7 +2,7 @@ import type { ResultsData, SurveyResponse, PillarScore, ENPSData, TeamScore } fr
 
 const SHEET_ID  = process.env.GOOGLE_SHEETS_ID!;
 const API_KEY   = process.env.GOOGLE_SHEETS_API_KEY!;
-const RANGE     = 'Sheet1!A:O';
+const RANGE     = "'Form responses 1'!A:O";
 
 // Column order from Apps Script:
 // A Timestamp, B Team, C Leadership, D Values, E Empowerment, F Performance,
@@ -10,7 +10,7 @@ const RANGE     = 'Sheet1!A:O';
 // K Future Confidence, L Belonging, M eNPS Score, N Improvement Suggestion, O Response ID
 
 export async function fetchSheetData(): Promise<ResultsData> {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(RANGE)}?key=${API_KEY}`;
 
   const res = await fetch(url, { next: { revalidate: 60 } });
   if (!res.ok) {
