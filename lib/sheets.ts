@@ -14,7 +14,8 @@ export async function fetchSheetData(): Promise<ResultsData> {
 
   const res = await fetch(url, { next: { revalidate: 60 } });
   if (!res.ok) {
-    throw new Error(`Sheets API error: ${res.status}`);
+    const body = await res.text().catch(() => '(unreadable)');
+    throw new Error(`Sheets API ${res.status}: ${body}`);
   }
 
   const json = await res.json() as { values?: string[][] };

@@ -17,7 +17,8 @@ export async function GET() {
     const data = await fetchSheetData();
     return NextResponse.json(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[/api/results]', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
