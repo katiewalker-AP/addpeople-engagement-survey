@@ -1,16 +1,17 @@
 import type { ResultsData, SurveyResponse, PillarScore, ENPSData, TeamScore } from './types';
 
-const SHEET_ID  = process.env.GOOGLE_SHEETS_ID!;
-const API_KEY   = process.env.GOOGLE_SHEETS_API_KEY!;
-const RANGE     = "Form responses 1!A:O";
+const SHEET_ID = process.env.GOOGLE_SHEETS_ID!;
+const API_KEY = process.env.GOOGLE_SHEETS_API_KEY!;
+const TAB = 'Form responses 1';
+const RANGE = `${TAB}!A:O`;
 
-// Column order from Apps Script:
+// Column order:
 // A Timestamp, B Team, C Leadership, D Values, E Empowerment, F Performance,
 // G Recognition, H Role Design, I Growth, J Continuous Improvement,
-// K Future Confidence, L Belonging, M eNPS Score, N Improvement Suggestion, O Response ID
+// K Future Confidence, L Belonging, M Advocacy/eNPS, N Improvement Suggestion, O Response ID
 
 export async function fetchSheetData(): Promise<ResultsData> {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(RANGE)}?key=${API_KEY}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${TAB}!A:O?key=${API_KEY}`;
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
   let res: Response;
