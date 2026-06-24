@@ -2,7 +2,7 @@ import type { ResultsData, SurveyResponse, PillarScore, ENPSData, TeamScore } fr
 
 const SHEET_ID  = process.env.GOOGLE_SHEETS_ID!;
 const API_KEY   = process.env.GOOGLE_SHEETS_API_KEY!;
-const RANGE     = "'Form responses 1'!A:O";
+const RANGE     = "Form responses 1!A:O";
 
 // Column order from Apps Script:
 // A Timestamp, B Team, C Leadership, D Values, E Empowerment, F Performance,
