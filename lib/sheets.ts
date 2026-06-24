@@ -12,39 +12,73 @@ const RANGE     = "'Form responses 1'!A:O";
 export async function fetchSheetData(): Promise<ResultsData> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(RANGE)}?key=${API_KEY}`;
 
-  const res = await fetch(url, { next: { revalidate: 60 } });
+  // ── Fetch ──────────────────────────────────────────────────────────────────
+  let res: Response;
+  try {
+    res = await fetch(url, { cache: 'no-store' });
+  } catch (err) {
+    throw new Error(`fetch() failed: ${String(err)}`);
+  }
+
   if (!res.ok) {
     const body = await res.text().catch(() => '(unreadable)');
     throw new Error(`Sheets API ${res.status}: ${body}`);
   }
 
-  const json = await res.json() as { values?: string[][] };
+  // ── Parse JSON ────────────────────────────────────────────────────────────
+  let json: { values?: string[][] };
+  try {
+    json = await res.json() as { values?: string[][] };
+  } catch (err) {
+    throw new Error(`JSON parse failed: ${String(err)}`);
+  }
+
   const rows: string[][] = json.values ?? [];
+  console.log(`[sheets] total rows inc. header: ${rows.length}`);
+  if (rows.length > 0) {
+    console.log('[sheets] header row:', JSON.stringify(rows[0]));
+  }
+  if (rows.length > 1) {
+    console.log('[sheets] first data row:', JSON.stringify(rows[1]));
+  }
 
   // Row 1 is always a header (Google Forms writes long question text there)
   const dataRows = rows.slice(1);
+  console.log(`[sheets] data rows after header skip: ${dataRows.length}`);
 
-  const responses: SurveyResponse[] = dataRows
-    .filter((row) => row.length >= 13 && row[1]?.trim())
-    .map((row) => ({
-      timestamp:             row[0] ?? '',
-      team:                  row[1] ?? '',
-      leadership:            parseNum(row[2]),
-      values:                parseNum(row[3]),
-      empowerment:           parseNum(row[4]),
-      performance:           parseNum(row[5]),
-      recognition:           parseNum(row[6]),
-      roleDesign:            parseNum(row[7]),
-      growth:                parseNum(row[8]),
-      continuousImprovement: parseNum(row[9]),
-      futureConfidence:      parseNum(row[10]),
-      belonging:             parseNum(row[11]),
-      enpsScore:             parseNum(row[12]),
-      improvementSuggestion: row[13] ?? '',
-      responseId:            row[14] ?? '',
-    }));
+  // ── Map rows → responses ───────────────────────────────────────────────────
+  let responses: SurveyResponse[];
+  try {
+    responses = dataRows
+      .filter((row) => row.length >= 13 && row[1]?.trim())
+      .map((row) => ({
+        timestamp:             row[0] ?? '',
+        team:                  row[1] ?? '',
+        leadership:            parseNum(row[2]),
+        values:                parseNum(row[3]),
+        empowerment:           parseNum(row[4]),
+        performance:           parseNum(row[5]),
+        recognition:           parseNum(row[6]),
+        roleDesign:            parseNum(row[7]),
+        growth:                parseNum(row[8]),
+        continuousImprovement: parseNum(row[9]),
+        futureConfidence:      parseNum(row[10]),
+        belonging:             parseNum(row[11]),
+        enpsScore:             parseNum(row[12]),
+        improvementSuggestion: row[13] ?? '',
+        responseId:            row[14] ?? '',
+      }));
+    console.log(`[sheets] mapped responses: ${responses.length}`);
+  } catch (err) {
+    throw new Error(`Row mapping failed: ${String(err)}`);
+  }
 
-  return computeResults(responses);
+  // ── Compute results ────────────────────────────────────────────────────────
+  try {
+    return computeResults(responses);
+  } catch (err) {
+    throw new Error(`computeResults failed: ${String(err)}`);
+  }
 }
 
 function parseNum(val: string | undefined): number {
