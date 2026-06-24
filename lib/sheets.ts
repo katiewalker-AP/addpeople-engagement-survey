@@ -21,8 +21,8 @@ export async function fetchSheetData(): Promise<ResultsData> {
   const json = await res.json() as { values?: string[][] };
   const rows: string[][] = json.values ?? [];
 
-  // Skip header row if present
-  const dataRows = rows.length > 0 && isNaN(Number(rows[0][2])) ? rows.slice(1) : rows;
+  // Row 1 is always a header (Google Forms writes long question text there)
+  const dataRows = rows.slice(1);
 
   const responses: SurveyResponse[] = dataRows
     .filter((row) => row.length >= 13 && row[1]?.trim())
