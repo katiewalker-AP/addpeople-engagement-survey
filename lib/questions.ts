@@ -53,7 +53,6 @@ export const QUESTIONS: Question[] = [
       'SEO Service',
       'Sales Inbound',
       'Sales Service Outbound',
-      'Sales International',
       'Sales Shopping',
       'Social Media',
     ],
